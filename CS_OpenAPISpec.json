@@ -1,0 +1,176 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Crowdstrike host search",
+        "version": "0.1"
+    },
+    "tags": [
+        {
+            "name": "ListChildProcessesService"
+        }
+    ],
+    "paths": {
+ "/devices/queries/devices/v1": {
+      "get": {
+        "summary": "Search for hosts in your environment by platform, hostname, IP, and other criteria.",
+        "operationId": "QueryDevicesByFilter",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "The offset to start retrieving records from",
+            "name": "offset",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "description": "The maximum records to return. [1-5000]",
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "The property to sort by (e.g. status.desc or hostname.asc)",
+            "name": "sort",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "The filter expression that should be used to limit the results",
+            "name": "filter",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/msaspec.Error/msa.QueryResponse"
+            },
+            "headers": {
+              "X-CS-TRACEID": {
+                "type": "string",
+                "description": "Trace-ID: submit to support if resolving an issue"
+              },
+              "X-RateLimit-Limit": {
+                "type": "integer",
+                "description": "Request limit per minute."
+              },
+              "X-RateLimit-Remaining": {
+                "type": "integer",
+                "description": "The number of requests remaining for the sliding one minute window."
+              }
+            }
+          },
+         
+        }
+      }
+    }
+	},
+
+"servers": [
+        {
+            "url": "https://api.us-2.crowdstrike.com"
+        }
+    ],
+    "definitions": {
+        "msaspec.Error": {
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "id": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    }, 
+	 "msaspec.MetaInfo": {
+      "required": [
+        "query_time",
+        "trace_id"
+      ],
+      "properties": {
+        "pagination": {
+          "$ref": "#/definitions/msaspec.Paging"
+        },
+        "powered_by": {
+          "type": "string"
+        },
+        "query_time": {
+          "type": "number",
+          "format": "double"
+        },
+        "trace_id": {
+          "type": "string"
+        },
+        "writes": {
+          "$ref": "#/definitions/msaspec.Writes"
+        }
+      }
+    },
+	"msaspec.Paging": {
+      "required": [
+        "limit",
+        "offset",
+        "total"
+      ],
+      "properties": {
+        "limit": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "offset": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+	"msaspec.Writes": {
+      "required": [
+        "resources_affected"
+      ],
+      "properties": {
+        "resources_affected": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+	"msa.QueryResponse": {
+      "required": [
+        "errors",
+        "meta",
+        "resources"
+      ],
+      "properties": {
+        "errors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/msaspec.Error"
+          }
+        },
+        "meta": {
+          "$ref": "#/definitions/msaspec.MetaInfo"
+        },
+        "resources": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+		
+	}
+}
