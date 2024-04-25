@@ -1,0 +1,120 @@
+{
+    "openapi": "2.0.0",
+    "info": {
+        "title": "Crowdstrike host search",
+        "version": "0.1"
+    },
+    "tags": [
+        {
+            "name": "ListChildProcessesService"
+        }
+    ],
+    "paths": {
+		
+ "/devices/queries/devices/v1": {
+      "get": {
+        "security": [
+          {
+            "oauth2": [
+              "devices:read"
+            ]
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "hosts"
+        ],
+        "summary": "Search for hosts in your environment by platform, hostname, IP, and other criteria.",
+        "operationId": "QueryDevicesByFilter",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "The offset to start retrieving records from",
+            "name": "offset",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "description": "The maximum records to return. [1-5000]",
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "The property to sort by (e.g. status.desc or hostname.asc)",
+            "name": "sort",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "The filter expression that should be used to limit the results",
+            "name": "filter",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/components/schemas/msa.QueryResponse"
+            },
+            "headers": {
+              "X-CS-TRACEID": {
+                "type": "string",
+                "description": "Trace-ID: submit to support if resolving an issue"
+              },
+              "X-RateLimit-Limit": {
+                "type": "integer",
+                "description": "Request limit per minute."
+              },
+              "X-RateLimit-Remaining": {
+                "type": "integer",
+                "description": "The number of requests remaining for the sliding one minute window."
+              }
+            }
+          },
+         
+        }
+      }
+    }
+	},
+
+"servers": [
+        {
+            "url": "https://api.us-2.crowdstrike.com"
+        }
+    ],
+
+    "components": {
+        "schemas": {
+
+	
+	"msa.QueryResponse": {
+      "required": [
+        "errors",
+        "meta",
+        "resources"
+      ],
+      "properties": {
+        "errors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/msaspec.Error"
+          }
+        },
+        "meta": {
+          "$ref": "#/definitions/msaspec.MetaInfo"
+        },
+        "resources": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+		}
+	}
+}
